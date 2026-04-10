@@ -1,0 +1,50 @@
+﻿@{
+    ViewData["Title"] = "Register";
+    var category = ViewBag.Category ?? "";
+}
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-5">
+      <div class="card border-0 shadow">
+        <div class="card-header bg-primary text-white text-center py-3">
+          <h4 class="mb-0">&#x1F4CB; Player Registration</h4>
+          <small>@category - 10 Questions</small>
+        </div>
+        <div class="card-body p-4">
+
+          @if (ViewBag.Error != null)
+          {
+            <div class="alert alert-danger">@ViewBag.Error</div>
+          }
+
+          <form asp-action="Register" method="post">
+            <input type="hidden" name="category" value="@category" />
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Full Name</label>
+              <input type="text" name="name" class="form-control form-control-lg"
+                     placeholder="Enter your name" required autofocus />
+            </div>
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Email Address</label>
+              <input type="email" name="email" class="form-control form-control-lg"
+                     placeholder="Enter your email" required />
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-lg">
+                Start Quiz &#x25B6;
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="text-center mt-3">
+        <a asp-controller="Quiz" asp-action="SelectCategory" class="text-decoration-none text-secondary">
+          &#x2190; Back
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

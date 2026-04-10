@@ -1,0 +1,69 @@
+﻿@model OOPAlgoQuizGame.ViewModels.QuizSessionViewModel
+@{
+    ViewData["Title"] = "Result";
+    bool   winner = Model.Score >= 90;
+    string colour = Model.Score >= 90 ? "success" : Model.Score >= 70 ? "warning" : "danger";
+    string emoji  = Model.Score >= 90 ? "&#x1F3C6;" : Model.Score >= 70 ? "&#x1F44D;" : "&#x1F622;";
+}
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-7">
+      <div class="card border-0 shadow text-center">
+
+        <div class="card-header bg-@colour @(colour == "warning" ? "text-dark" : "text-white") py-3">
+          <h3 class="mb-0">@Html.Raw(emoji) Quiz Complete!</h3>
+        </div>
+
+        <div class="card-body p-5">
+          <p class="fs-5 text-muted">
+            Well done, <strong>@Model.Name</strong>!<br />
+            <small class="badge bg-secondary">@Model.Category</small>
+          </p>
+
+          <div class="my-4">
+            <div class="display-1 fw-bold text-@colour">@Model.Score%</div>
+            <p class="text-muted mt-1">
+              @Model.CorrectAnswers correct out of 10 questions
+            </p>
+          </div>
+
+          <div class="progress mb-4" style="height:28px; border-radius:14px;">
+            <div class="progress-bar bg-@colour"
+                 role="progressbar"
+                 style="width:@Model.Score%; font-size:1rem; line-height:28px;"
+                 aria-valuenow="@Model.Score" aria-valuemin="0" aria-valuemax="100">
+              @Model.Score%
+            </div>
+          </div>
+
+          @if (winner)
+          {
+            <div class="alert alert-success">
+              &#x1F389; Congratulations! You scored 90%+ and are on the
+              <strong>Winners Leaderboard</strong>!
+            </div>
+          }
+          else
+          {
+            <div class="alert alert-secondary">
+              Score <strong>90% or above</strong> to make the leaderboard. Keep practising!
+            </div>
+          }
+
+          <div class="d-flex justify-content-center gap-3 flex-wrap mt-3">
+            <a asp-controller="Quiz" asp-action="SelectCategory" class="btn btn-primary px-4">
+              &#x1F504; Try Another Category
+            </a>
+            <a asp-controller="Admin" asp-action="Winners" class="btn btn-outline-success px-4">
+              &#x1F3C6; Leaderboard
+            </a>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary px-4">
+              &#x1F3E0; Home
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,129 @@
+﻿@model OOPAlgoQuizGame.Models.Question
+
+@{
+    ViewData["Title"] = "Question";
+
+    var session = ViewBag.Session as OOPAlgoQuizGame.ViewModels.QuizSessionViewModel;
+
+    int progress = ViewBag.Progress != null
+        ? Convert.ToInt32(ViewBag.Progress)
+        : 0;
+
+    int qNum = session != null ? session.CurrentIndex + 1 : 1;
+}
+
+@if (session == null)
+{
+    <div class="alert alert-warning text-center mt-5">
+        Session expired. Please restart the quiz.
+    </div>
+    return;
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted small">
+                    👤 <strong>@session.Name</strong>
+                </span>
+
+                <span class="badge bg-secondary">
+                    Q @qNum / @session.QuestionIds.Count
+                </span>
+
+                <span class="badge bg-info text-dark">
+                    @session.Category
+                </span>
+            </div>
+
+            <div class="progress mb-4" style="height:12px; border-radius:6px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
+                     role="progressbar"
+                     style="width:@progress%"
+                     aria-valuenow="@progress"
+                     aria-valuemin="0"
+                     aria-valuemax="100">
+                </div>
+            </div>
+
+            <div class="card border-0 shadow">
+                <div class="card-body p-4">
+
+                    <h5 class="mb-4">
+                        <span class="badge bg-primary me-2 fs-6">Q@qNum</span>
+                        @Model.QuestionText
+                    </h5>
+
+                    <form asp-action="Answer" method="post" id="quizForm">
+                        <input type="hidden" name="questionId" value="@Model.Id" />
+
+                        @{
+                            var opts = new[]
+                            {
+                                                new { Key = "A", Text = Model.OptionA },
+                                                new { Key = "B", Text = Model.OptionB },
+                                                new { Key = "C", Text = Model.OptionC },
+                                                new { Key = "D", Text = Model.OptionD }
+                                                };
+                        }
+
+                        @foreach (var opt in opts)
+                        {
+                            <div class="option-card d-flex align-items-center mb-3 p-3 border rounded"
+                                 onclick="pick(this,'@opt.Key')"
+                                 style="cursor:pointer;transition:background .15s;">
+
+                                <input class="form-check-input me-3 flex-shrink-0"
+                                       type="radio"
+                                       name="selectedAnswer"
+                                       id="opt@opt.Key"
+                                       value="@opt.Key"
+                                       required />
+
+                                <label class="form-check-label w-100" for="opt@opt.Key">
+                                    <span class="badge bg-secondary me-2">@opt.Key</span>
+                                    @opt.Text
+                                </label>
+                            </div>
+                        }
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                Next →
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+            <div class="text-center mt-3 text-muted small">
+                ✅ Correct so far: <strong>@(session?.CorrectAnswers ?? 0)</strong>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .option-card:hover {
+        background: #eef2ff;
+    }
+
+    .option-card.picked {
+        background: #dce8ff;
+        border-color: #0d6efd !important;
+    }
+</style>
+
+<script>
+    function pick(card, key) {
+      document.querySelectorAll('.option-card')
+        .forEach(c => c.classList.remove('picked'));
+
+      card.classList.add('picked');
+      document.getElementById('opt' + key).checked = true;
+    }
+</script>

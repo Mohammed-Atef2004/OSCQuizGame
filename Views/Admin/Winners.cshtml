@@ -1,0 +1,88 @@
+﻿@model IEnumerable<OOPAlgoQuizGame.Models.Winner>
+@{
+    ViewData["Title"] = "Leaderboard";
+    var categories = (string[])ViewBag.Categories;
+    var selectedCategory = (string)ViewBag.SelectedCategory;
+}
+
+<div class="container py-5">
+  <div class="text-center mb-5">
+    <h1 class="display-5 fw-bold text-warning">
+      &#x1F3C6; Winners Leaderboard
+    </h1>
+    <p class="text-muted">Hall of fame - players who scored 90% or above</p>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="btn-group w-100" role="group">
+        <a asp-action="Winners" asp-route-category="" class="btn @(string.IsNullOrEmpty(selectedCategory) ? "btn-primary active" : "btn-outline-primary")">
+          All Categories
+        </a>
+        @foreach (var cat in categories)
+        {
+          <a asp-action="Winners" asp-route-category="@cat" class="btn @(selectedCategory == cat ? "btn-primary active" : "btn-outline-primary")">
+            @cat
+          </a>
+        }
+      </div>
+    </div>
+  </div>
+
+  @if (!Model.Any())
+  {
+    <div class="alert alert-info text-center">
+      No winners yet. Be the first to score 90%+!
+    </div>
+  }
+  else
+  {
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered align-middle shadow-sm">
+        <thead class="table-dark text-center">
+          <tr>
+            <th>Rank</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Category</th>
+            <th>Score</th>
+            <th>Date Achieved</th>
+          </tr>
+        </thead>
+        <tbody>
+          @{int rank = 1;}
+          @foreach (var w in Model)
+          {
+            <tr class="@(rank==1?"table-warning":rank==2?"table-secondary":rank==3?"table-light":"")">
+              <td class="text-center fw-bold">
+                @if (rank == 1)     { <text>&#x1F947;</text> }
+                else if (rank == 2) { <text>&#x1F948;</text> }
+                else if (rank == 3) { <text>&#x1F949;</text> }
+                else                { @rank }
+              </td>
+              <td>@w.Name</td>
+              <td>@w.Email</td>
+              <td><span class="badge bg-info">@w.Category</span></td>
+              <td class="text-center">
+                <span class="badge bg-success fs-6">@w.Score%</span>
+              </td>
+              <td class="text-center">
+                @w.DateAchieved.ToString("dd MMM yyyy  HH:mm") UTC
+              </td>
+            </tr>
+            rank++;
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <div class="text-center mt-4">
+    <a asp-controller="Quiz" asp-action="SelectCategory" class="btn btn-primary px-5">
+      &#x25B6; Take a Quiz
+    </a>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary ms-3 px-4">
+      &#x1F3E0; Home
+    </a>
+  </div>
+</div>
