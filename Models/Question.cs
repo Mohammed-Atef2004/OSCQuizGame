@@ -27,5 +27,9 @@ namespace OOPAlgoQuizGame.Models
 
         [Required]
         public string Category { get; set; } = string.Empty;
+
+        // New: explanation text shown after the user answers
+        public string? Explanation { get; set; }
     }
 }
+

@@ -10,6 +10,8 @@
         : 0;
 
     int qNum = session != null ? session.CurrentIndex + 1 : 1;
+
+    var feedback = ViewBag.LastFeedback;
 }
 
 @if (session == null)
@@ -56,45 +58,80 @@
                         @Model.QuestionText
                     </h5>
 
-                    <form asp-action="Answer" method="post" id="quizForm">
-                        <input type="hidden" name="questionId" value="@Model.Id" />
+                    @if (feedback != null)
+                    {
+                        var isCorrect = feedback.IsCorrect;
+                        <div class="alert @(isCorrect ? "alert-success" : "alert-danger")">
+                            <h6 class="mb-2">
+                                @(isCorrect ? "Correct ✅" : "Incorrect ❌")
+                            </h6>
 
-                        @{
-                            var opts = new[]
-                            {
-                                                new { Key = "A", Text = Model.OptionA },
-                                                new { Key = "B", Text = Model.OptionB },
-                                                new { Key = "C", Text = Model.OptionC },
-                                                new { Key = "D", Text = Model.OptionD }
-                                                };
-                        }
-
-                        @foreach (var opt in opts)
-                        {
-                            <div class="option-card d-flex align-items-center mb-3 p-3 border rounded"
-                                 onclick="pick(this,'@opt.Key')"
-                                 style="cursor:pointer;transition:background .15s;">
-
-                                <input class="form-check-input me-3 flex-shrink-0"
-                                       type="radio"
-                                       name="selectedAnswer"
-                                       id="opt@opt.Key"
-                                       value="@opt.Key"
-                                       required />
-
-                                <label class="form-check-label w-100" for="opt@opt.Key">
-                                    <span class="badge bg-secondary me-2">@opt.Key</span>
-                                    @opt.Text
-                                </label>
+                            <div class="mb-2">
+                                <strong>Your answer:</strong>
+                                @feedback.Selected
                             </div>
-                        }
 
-                        <div class="d-grid mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                Next →
-                            </button>
+                            <div class="mb-2">
+                                <strong>Correct answer:</strong>
+                                @feedback.CorrectLetter — @feedback.CorrectText
+                            </div>
+
+                            <div class="mb-3 small text-muted">
+                                <strong>Explanation:</strong>
+                                <div>@feedback.Explanation</div>
+                            </div>
+
+                            <form asp-action="Continue" method="post">
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        Continue →
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                    </form>
+                    }
+                    else
+                    {
+                        <form asp-action="Answer" method="post" id="quizForm">
+                            <input type="hidden" name="questionId" value="@Model.Id" />
+
+                            @{
+                                var opts = new[]
+                                {
+                                    new { Key = "A", Text = Model.OptionA },
+                                    new { Key = "B", Text = Model.OptionB },
+                                    new { Key = "C", Text = Model.OptionC },
+                                    new { Key = "D", Text = Model.OptionD }
+                                };
+                            }
+
+                            @foreach (var opt in opts)
+                            {
+                                <div class="option-card d-flex align-items-center mb-3 p-3 border rounded"
+                                     onclick="pick(this,'@opt.Key')"
+                                     style="cursor:pointer;transition:background .15s;">
+
+                                    <input class="form-check-input me-3 flex-shrink-0"
+                                           type="radio"
+                                           name="selectedAnswer"
+                                           id="opt@opt.Key"
+                                           value="@opt.Key"
+                                           required />
+
+                                    <label class="form-check-label w-100" for="opt@opt.Key">
+                                        <span class="badge bg-secondary me-2">@opt.Key</span>
+                                        @opt.Text
+                                    </label>
+                                </div>
+                            }
+
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    Answer
+                                </button>
+                            </div>
+                        </form>
+                    }
 
                 </div>
             </div>

@@ -109,6 +109,20 @@ namespace OOPAlgoQuizGame.Controllers
             if (question == null)
                 return RedirectToAction(nameof(Result));
 
+            // Move feedback from TempData to ViewBag so view can render explanation
+            var lastCorrect = TempData["LastCorrect"] as string;
+            if (!string.IsNullOrEmpty(lastCorrect))
+            {
+                ViewBag.LastFeedback = new
+                {
+                    IsCorrect = string.Equals(lastCorrect, "true", StringComparison.OrdinalIgnoreCase),
+                    Selected = TempData["LastSelected"] as string ?? "",
+                    CorrectLetter = TempData["LastCorrectLetter"] as string ?? "",
+                    CorrectText = TempData["LastCorrectText"] as string ?? "",
+                    Explanation = TempData["LastExplanation"] as string ?? ""
+                };
+            }
+
             ViewBag.Session = session;
             ViewBag.Progress = (int)((double)session.CurrentIndex / session.QuestionIds.Count * 100);
 
@@ -116,7 +130,7 @@ namespace OOPAlgoQuizGame.Controllers
         }
 
         // -------------------------
-        // Answer
+        // Answer (show feedback, do NOT advance index)
         // -------------------------
         [HttpPost]
         public async Task<IActionResult> Answer(int questionId, string selectedAnswer)
@@ -142,16 +156,57 @@ namespace OOPAlgoQuizGame.Controllers
 
             if (question != null && !string.IsNullOrWhiteSpace(selectedAnswer))
             {
-                if (string.Equals(selectedAnswer.Trim(),
+                bool isCorrect = string.Equals(selectedAnswer.Trim(),
                     question.CorrectAnswer,
-                    StringComparison.OrdinalIgnoreCase))
+                    StringComparison.OrdinalIgnoreCase);
+
+                if (isCorrect)
                 {
+                    // increment correct answers but do NOT advance the index yet
                     session.CorrectAnswers++;
                 }
 
-                session.CurrentIndex++;
+                // Save session with updated correct count but same CurrentIndex
+                SaveSession(session);
+
+                // prepare feedback data to show explanation on the following GET
+                string correctLetter = question.CorrectAnswer ?? "";
+                string correctText = correctLetter switch
+                {
+                    "A" => question.OptionA,
+                    "B" => question.OptionB,
+                    "C" => question.OptionC,
+                    "D" => question.OptionD,
+                    _ => ""
+                };
+
+                TempData["LastCorrect"] = isCorrect ? "true" : "false";
+                TempData["LastSelected"] = selectedAnswer;
+                TempData["LastCorrectLetter"] = correctLetter;
+                TempData["LastCorrectText"] = correctText;
+                TempData["LastExplanation"] = question.Explanation ?? "";
             }
 
+            return RedirectToAction(nameof(Question));
+        }
+
+        // -------------------------
+        // Continue (advance to next question after user saw feedback)
+        // -------------------------
+        [HttpPost]
+        public IActionResult Continue()
+        {
+            var session = LoadSession();
+            if (session == null)
+                return RedirectToAction(nameof(SelectCategory));
+
+            if (session.QuestionIds == null ||
+                session.CurrentIndex >= session.QuestionIds.Count)
+            {
+                return RedirectToAction(nameof(Result));
+            }
+
+            session.CurrentIndex++;
             SaveSession(session);
 
             return RedirectToAction(nameof(Question));
