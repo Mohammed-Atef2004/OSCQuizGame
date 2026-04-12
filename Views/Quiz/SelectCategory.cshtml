@@ -1,56 +1,73 @@
 ﻿@{
-    ViewData["Title"] = "Select Category";
+    ViewData["Title"] = "Home";
 }
 
 <div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-lg-8">
-      <div class="card border-0 shadow-lg">
-        <div class="card-header bg-primary text-white text-center py-3">
-          <h3 class="mb-0">&#x1F4CA; Choose Quiz Category</h3>
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg">
+                <div class="card-body text-center p-5">
+                    <div class="mb-3" style="font-size:4rem;">&#x1F9E0;</div>
+                    <h1 class="display-5 fw-bold text-primary mb-3">Category-Based Quiz</h1>
+                    <p class="lead text-muted mb-4">
+                        Test your knowledge across multiple categories.<br />
+                        10 random questions per quiz &mdash; score <span class="badge bg-success fs-6">90%+</span>
+                        to make the leaderboard!
+                    </p>
+
+                    <div class="d-flex justify-content-center gap-2 mb-4">
+                        <a asp-controller="Admin" asp-action="Winners" class="btn btn-outline-warning">
+                            &#x1F3C6; Leaderboard
+                        </a>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <h5 class="fw-bold mb-3">Choose a Category:</h5>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <a asp-controller="Quiz" asp-action="Register" asp-route-category="SP"
+                               class="btn btn-primary btn-lg w-100 py-4">
+                                <div style="font-size:2rem;">&#x1F4BB;</div>
+                                <strong>SP — Structured Programming (C++)</strong>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a asp-controller="Quiz" asp-action="Register" asp-route-category="SOLID"
+                               class="btn btn-secondary btn-lg w-100 py-4">
+                                <div style="font-size:2rem;">&#x1F4C8;</div>
+                                <strong>SOLID Principles</strong>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a asp-controller="Quiz" asp-action="Register" asp-route-category="OOP"
+                               class="btn btn-info btn-lg w-100 py-4">
+                                <div style="font-size:2rem;">&#x1F308;</div>
+                                <strong>OOP (Java)</strong>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a asp-controller="Quiz" asp-action="Register" asp-route-category="DS"
+                               class="btn btn-success btn-lg w-100 py-4">
+                                <div style="font-size:2rem;">&#x1F9F0;</div>
+                                <strong>Data Structures (C++)</strong>
+                            </a>
+                        </div>
+                        <div class="col-md-12">
+                            <a asp-controller="Quiz" asp-action="Register" asp-route-category=".NET"
+                               class="btn btn-warning btn-lg w-100 py-4 mt-2">
+                                <div style="font-size:2rem;">&#x26A1;</div>
+                                <strong>.NET (C#)</strong>
+                            </a>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+
+                </div>
+            </div>
         </div>
-        <div class="card-body p-5">
-
-          <p class="text-muted text-center mb-4">Select a category to begin your 10-question quiz:</p>
-
-          <div class="row g-3">
-            <div class="col-md-6">
-              <a asp-controller="Quiz" asp-action="Register" asp-route-category="SP"
-                 class="btn btn-primary btn-lg w-100 py-3">
-                <div style="font-size:1.5rem;">&#x1F4CA;</div>
-                SOLID Principles
-              </a>
-            </div>
-            <div class="col-md-6">
-              <a asp-controller="Quiz" asp-action="Register" asp-route-category="OOP"
-                 class="btn btn-info btn-lg w-100 py-3">
-                <div style="font-size:1.5rem;">&#x1F308;</div>
-                OOP
-              </a>
-            </div>
-            <div class="col-md-6">
-              <a asp-controller="Quiz" asp-action="Register" asp-route-category="DS"
-                 class="btn btn-success btn-lg w-100 py-3">
-                <div style="font-size:1.5rem;">&#x1F9F0;</div>
-                Data Structures
-              </a>
-            </div>
-            <div class="col-md-6">
-              <a asp-controller="Quiz" asp-action="Register" asp-route-category=".NET"
-                 class="btn btn-warning btn-lg w-100 py-3">
-                <div style="font-size:1.5rem;">&#x26A1;</div>
-                .NET Framework
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="text-center mt-3">
-        <a asp-controller="Home" asp-action="Index" class="text-decoration-none text-secondary">
-          &#x2190; Back to Home
-        </a>
-      </div>
     </div>
-  </div>
+</div>
 </div>

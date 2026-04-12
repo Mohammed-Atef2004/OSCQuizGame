@@ -12,8 +12,8 @@ using OOPAlgoQuizGame.Data;
 namespace OOPAlgoQuizGame.Migrations
 {
     [DbContext(typeof(QuizDbContext))]
-    [Migration("20260411175339_sdfs")]
-    partial class sdfs
+    [Migration("20260412045042_x")]
+    partial class x
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
